@@ -1,5 +1,5 @@
-import { createContext, useContext, useState } from "react";
-import { pricePerItem } from "../constants";
+import { createContext, useContext, useState } from 'react';
+import { pricePerItem } from '../constants';
 
 const OrderDetails = createContext();
 
@@ -8,9 +8,7 @@ export function useOrderDetails() {
   const contextValue = useContext(OrderDetails);
 
   if (!contextValue) {
-    throw new Error(
-      "useOrderDetails must be called from within an OrderDetailsProvider"
-    );
+    throw new Error('useOrderDetails must be called from within an OrderDetailsProvider');
   }
 
   return contextValue;
@@ -27,7 +25,7 @@ export function OrderDetailsProvider(props) {
     const newOptionCounts = { ...optionCounts };
 
     // update the copy with the new information
-    newOptionCounts[optionType][itemName] = newItemCount;
+    newOptionCounts[optionType][itemName] = isNaN(newItemCount) ? 0 : newItemCount;
 
     // update the state with the updated copy
     setOptionCounts(newOptionCounts);
@@ -60,8 +58,8 @@ export function OrderDetailsProvider(props) {
   }
 
   const totals = {
-    scoops: calculateTotal("scoops"),
-    toppings: calculateTotal("toppings"),
+    scoops: calculateTotal('scoops'),
+    toppings: calculateTotal('toppings'),
   };
 
   const value = { optionCounts, totals, updateItemCount, resetOrder };

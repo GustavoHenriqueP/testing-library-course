@@ -73,3 +73,66 @@ test('order phases for happy path', async () => {
   // umount
   unmount();
 });
+
+test('toppings section om summary does not appears if no topping was selected', async () => {
+  // setup user events and render app
+  const user = userEvent.setup();
+  render(<App />);
+
+  // add ice cream scoops only
+  const chocolateScoopInput = await screen.findByRole('spinbutton', { name: 'Chocolate' });
+
+  await user.clear(chocolateScoopInput);
+  await user.type(chocolateScoopInput, '3');
+
+  // find and click order button
+  const orderButton = screen.getByRole('button', { name: /order sundae/i });
+  await user.click(orderButton);
+
+  // check summary subtotals
+  const scoopsHeading = screen.getByRole('heading', { name: /scoops/i });
+  expect(scoopsHeading).toBeInTheDocument();
+
+  const toppingsHeading = screen.queryByRole('heading', { name: /toppings/i });
+  expect(toppingsHeading).not.toBeInTheDocument();
+
+  const lists = screen.getAllByRole('list');
+  expect(lists).toHaveLength(1);
+});
+
+test('toppings section om summary does not appears if toppings was ordered, then removed', async () => {
+  // setup user events and render app
+  const user = userEvent.setup();
+  render(<App />);
+
+  // add ice cream scoops only
+  const chocolateScoopInput = await screen.findByRole('spinbutton', { name: 'Chocolate' });
+  const mmsToppingInput = await screen.findByRole('checkbox', { name: 'M&Ms' });
+  const toppingsTotal = screen.getByText('Toppings total: $', { exact: false });
+
+  await user.clear(chocolateScoopInput);
+  await user.type(chocolateScoopInput, '3');
+
+  // one click to select and another to remove
+  await user.click(mmsToppingInput);
+  expect(mmsToppingInput).toBeChecked();
+  expect(toppingsTotal).toHaveTextContent('1.50');
+
+  await user.click(mmsToppingInput);
+  expect(mmsToppingInput).not.toBeChecked();
+  expect(toppingsTotal).toHaveTextContent('0.00');
+
+  // find and click order button
+  const orderButton = screen.getByRole('button', { name: /order sundae/i });
+  await user.click(orderButton);
+
+  // check summary subtotals
+  const scoopsHeading = screen.getByRole('heading', { name: /scoops/i });
+  expect(scoopsHeading).toBeInTheDocument();
+
+  const toppingsHeading = screen.queryByRole('heading', { name: /toppings/i });
+  expect(toppingsHeading).not.toBeInTheDocument();
+
+  const lists = screen.getAllByRole('list');
+  expect(lists).toHaveLength(1);
+});

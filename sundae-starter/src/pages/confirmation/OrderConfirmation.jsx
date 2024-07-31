@@ -27,9 +27,16 @@ const OrderConfirmation = ({ setOrderPhase }) => {
     setOrderPhase('inProgress');
   }
 
+  const newOrderButton = <Button onClick={handleClick}>Create new order</Button>;
+
   if (error) {
     // @ts-ignore
-    return <AlertBanner />;
+    return (
+      <>
+        <AlertBanner />
+        {newOrderButton}
+      </>
+    );
   }
 
   if (orderNumber)
@@ -38,7 +45,7 @@ const OrderConfirmation = ({ setOrderPhase }) => {
         <h1>Thank you!</h1>
         <p>Your order number is {orderNumber}</p>
         <p style={{ fontSize: '25%' }}>as per terms and conditions, nothing will happen now</p>
-        <Button onClick={handleClick}>Create new order</Button>
+        {newOrderButton}
       </div>
     );
 

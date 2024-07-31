@@ -106,8 +106,10 @@ describe('grand total', () => {
     await user.click(cherriesToppingInput);
     await user.click(mmsToppingInput);
 
-    // Remove part o these items
+    // Remove part of these items
+    await user.clear(vanillaScoopInput);
     await user.type(vanillaScoopInput, '1');
+    console.log(vanillaScoopInput.textContent);
     await user.click(cherriesToppingInput);
 
     expect(grandTotal).toHaveTextContent('3.50');

@@ -15,7 +15,9 @@ export default function OrderEntry({ setOrderPhase }) {
       <Options optionType="scoops" />
       <Options optionType="toppings" />
       <h2>Grand total: {formatCurrency(grandTotal)}</h2>
-      <Button onClick={() => setOrderPhase('review')}>Order Sundae!</Button>
+      <Button disabled={totals.scoops === 0} onClick={() => setOrderPhase('review')}>
+        Order Sundae!
+      </Button>
     </div>
   );
 }
